@@ -3,11 +3,11 @@ interface Tile {
     y: number;
 }
 
-const inputRed = 'R8,U5,L5,D3';
-const inputBlue = 'U7,R6,D4,L4';
+// const inputRed = 'R8,U5,L5,D3';
+// const inputBlue = 'U7,R6,D4,L4';
 
-// const inputRed = 'R75,D30,R83,U83,L12,D49,R71,U7,L72';
-// const inputBlue = 'U62,R66,U55,R34,D71,R55,D58,R83';
+const inputRed = 'R75,D30,R83,U83,L12,D49,R71,U7,L72';
+const inputBlue = 'U62,R66,U55,R34,D71,R55,D58,R83';
 
 // const inputRed = 'R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51';
 // const inputBlue = 'U98,R91,D20,R16,D67,R40,U7,R15,U6,R7';
@@ -44,7 +44,7 @@ class Wire {
                 break;
         }
         this.steps.add(`${this.location.x},${this.location.y}`);
-        console.log(`Added: ${this.location.x},${this.location.y}`);
+        // console.log(`Added: ${this.location.x},${this.location.y}`);
     }
 
     traverse(input: string[]) {
@@ -57,26 +57,44 @@ class Wire {
         });
     }
 
+    // compare(wire: Wire) {
+    //     const result: string[] = [];
+    //     this.steps.forEach(step => {
+    //         console.log(step);
+    //         if (wire.steps.has(step)) {
+    //             result.push(step);
+    //         }
+    //     });
+    //     this.findNearestIntersection(result);
+    // }
+
     compare(wire: Wire) {
-        const result: string[] = [];
-        let totalSteps = 0;
-        this.steps.forEach((step, index) => {
-            if (wire.steps.has(step)) {
-                console.log(step, index);
-                // result.push(step);
-                totalSteps += Number(index);
+        // const result: string[] = [];
+        const result: Set<number> = new Set();
+        let stepCount1 = 0;
+        let stepCount2 = 0;
+        let lowestStepCount = 0;
+
+        for (let step1 of this.steps) {
+            console.log(step1);
+            stepCount1++;
+            if (wire.steps.has(step1)) {
+                for (let step2 of wire.steps) {
+                    console.log(step2);
+                    stepCount2++;
+                    if (this.steps.has(step2)) {
+                        break;
+                    }
+                }
+                result.add(stepCount1 + stepCount2);
+                if (stepCount1 + stepCount2 < lowestStepCount || lowestStepCount === 0) {
+                    lowestStepCount = stepCount1 + stepCount2;
+                }
             }
-        });
-        // wire.steps.forEach((step, index) => {
-        //     if (this.steps.has(step)) {
-        //         console.log(step, index);
-        //         // result.push(step);
-        //         totalSteps += Number(index);
-        //     }
-        // });
-        // console.log(totalSteps);
-        this.findNearestIntersection(result);
-        // this.findShortestIntersection(result);
+        }
+        console.log(lowestStepCount, result);
+
+        //this.findNearestIntersection(result);
     }
 
     findNearestIntersection(array: string[]) {
